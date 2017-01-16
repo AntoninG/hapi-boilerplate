@@ -24,6 +24,11 @@ module.exports.init = server => {
                 server.register({
                     register : require('hapi-boom-decorators')
                 }, done);
+            },
+            swagger(done) {
+                server.register({
+                    register : require('hapi-swagger')
+                }, done);
             }
         }, err => {
             if (err) {
