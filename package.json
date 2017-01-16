@@ -24,6 +24,9 @@
     "hapi": "16.0.1",
     "hapi-boom-decorators": "2.2.2",
     "hapi-swagger": "^7.6.0",
-    "lodash": "4.17.2"
+    "inert": "^4.1.0",
+    "joi": "^10.2.0",
+    "lodash": "4.17.2",
+    "vision": "^4.1.1"
   }
 }
