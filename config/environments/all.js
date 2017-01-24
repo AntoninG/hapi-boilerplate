@@ -3,7 +3,7 @@
 const _             = require('lodash');
 const env           = require('./' + (process.env.NODE_ENV || 'development'));
 const packageJson   = require('../../package.json');
-
+console.log(process.env.NODE_ENV);
 const all           = {
     log : {
         showRouteAtStart : true

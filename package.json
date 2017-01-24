@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/throrin19/hapi-boilerplate#readme",
   "dependencies": {
+    "@antoning/iut-encrypt": "^1.0.0",
     "async": "2.1.4",
     "blipp": "2.3.0",
     "good": "7.1.0",
@@ -26,6 +27,9 @@
     "hapi-swagger": "^7.6.0",
     "inert": "^4.1.0",
     "joi": "^10.2.0",
+    "json-mongoose": "^0.3.3",
+    "k7": "^1.5.0",
+    "k7-mongoose": "^1.5.0",
     "lodash": "4.17.2",
     "vision": "^4.1.1"
   }
