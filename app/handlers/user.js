@@ -1,18 +1,38 @@
 'use strict';
 
-const Lodash = require('lodash');
+const _ = require('lodash');
+
+module.exports.readOne = (request, response) => {
+
+};
+
+module.exports.readAll = (request, response) => {
+
+};
 
 /**
- * Return the user validated without password and nir
  *
  * @param request
  * @param response
  */
-module.exports.validate = (request, response) => {
+module.exports.create = (request, response) => {
+    let model = new request.server.database.user();
 
-    response(null,  {
-        result : Lodash.omit(request.payload, ['password', 'nir'])
+    model.save(request.payload);
+
+    model.save().then(saved => {
+        response.boom(200, 'OK');
+    }).catch(err => {
+        response.boom(500, 'Error on save', _.omit(request.payload, ['password', 'nir']));
     });
+};
+
+module.exports.update = (request, response) => {
+
+};
+
+module.exports.delete = (request, response) => {
+
 };
 
 /**
