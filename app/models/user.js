@@ -9,18 +9,20 @@ module.exports = jsonToMongoose({
     collection  : 'user',
     schema      : require('../schemas/user'),
     autoinc     : {
-        field   : '_id'
+        field       : '_id',
+        startAt     : 1,
+        incrementBy : 1
     },
     pre         : {
         save : (doc, next) => {
             //TODO check on update
             let hash = encrypt.encodeSha1(doc.password);
 
-            if (hash !== false) {
-                doc.password = hash;
-            } else {
+            if (hash === false) {
                 return next(new Error('Unable to encode password'));
             }
+            doc.password = hash;
+            return next();
         }
     },
     schemaUpdate : (schema) => {

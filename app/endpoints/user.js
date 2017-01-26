@@ -8,14 +8,14 @@ exports.register = (server, options, next) => {
     server.route([
         {
             method : 'GET',
-            path   : '/users/{id}',
+            path   : '/users/{_id}',
             config : {
                 description : 'Get a specific user',
                 notes       : 'Get a specific user',
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {
-                        _id : Joi.string()
+                        _id : Joi.number().integer().min(1)
                     }
                 },
                 handler     : handler.readOne
@@ -49,13 +49,16 @@ exports.register = (server, options, next) => {
 
         {
             method : 'PUT',
-            path   : '/users/{id}',
+            path   : '/users/{_id}',
             config : {
-                description : 'Update the user',
-                notes       : 'Update the user',
+                description : 'Update a user',
+                notes       : 'Update a user',
                 tags        : [ 'api' ],
                 validate    : {
-                    payload : schema
+                    payload : schema,
+                    params  : {
+                        _id : Joi.number().integer().min(1)
+                    }
                 },
                 handler     : handler.update
             }
@@ -63,11 +66,16 @@ exports.register = (server, options, next) => {
 
         {
             method : 'DELETE',
-            path   : '/users/{id}',
+            path   : '/users/{_id}',
             config : {
                 description : 'Delete a user',
                 notes       : 'Delete a user',
                 tags        : [ 'api' ],
+                validate    : {
+                    params  : {
+                        _id : Joi.number().integer().min(1)
+                    }
+                },
                 handler     : handler.delete
             }
         },
