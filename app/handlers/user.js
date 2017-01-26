@@ -1,6 +1,8 @@
 'use strict';
-
-const _ = require('lodash');
+//TODO more != HTTP code
+const _     = require('lodash');
+const Faker = require('faker');
+const MAX_RAND_INSERTED = 100;
 
 /**
  *
@@ -103,5 +105,27 @@ module.exports.delete = (request, response) => {
  */
 module.exports.insertUsers = (request, response) => {
     let nbUsers = request.params.number;
-    nbUsers = Math.min(nbUsers, 100);
+    nbUsers = Math.min(nbUsers, MAX_RAND_INSERTED);
+
+    let user = new request.server.database.user();
+    let count = 0;
+    for (let i = 0 ; i < nbUsers ; i++) {
+        user.set({
+            login    : Faker.Internet.userName(),
+            password : Faker.Name.findName(),
+            email    : Faker.Internet.email(),
+            firstName: Faker.Name.firstName(),
+            lastName : Faker.Name.lastName(),
+            company  : Faker.Company.companyName(),
+            function : Faker.Company.findName(),
+            nir      : Faker.Helpers.randomNumber()///^[12][0-9]{2}[0-1][0-9](2[AB]|[0-9]{2})[0-9]{3}[0-9]{3}[0-9]{2}$/
+        });
+
+        user.save().then(saved => {
+            count++;
+        }).catch(err => {
+        });
+    }
+
+    response(null, count+' documents inserted');
 };

@@ -87,6 +87,11 @@ exports.register = (server, options, next) => {
                 description : 'Insert a given number of random users',
                 notes       : 'Maximum 100 users inserted',
                 tags        : [ 'api' ],
+                validate    : {
+                    params  : {
+                        number : Joi.number().integer().min(1)
+                    }
+                },
                 handler     : handler.insertUsers
             }
         }
