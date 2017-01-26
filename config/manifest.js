@@ -3,7 +3,7 @@
 const Hapi          = require('hapi');
 const plugins       = require('./manifest/plugins');
 const routes        = require('./manifest/routes');
-const userModel     = require('./manifest/model.js');
+const model         = require('./manifest/model.js');
 const serverConfig  = require('./manifest/server');
 
 module.exports.init = () => {
@@ -19,7 +19,7 @@ module.exports.init = () => {
         return routes.init(server);
     }).then(() => {
         // User model configuration
-        return userModel.init(server);
+        return model.init(server);
     }).then(() => {
         return server;
     }).catch(err => {

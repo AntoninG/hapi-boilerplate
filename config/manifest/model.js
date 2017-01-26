@@ -12,7 +12,9 @@ module.exports.init = server => {
             options: {
                 connectionString : server.app.envs.connections.db.url,
                 adapter          : server.app.envs.connections.db.adapter,
-                models           : models,
+                models           : [
+                    path.join(modelsDir, '**/*.js')
+                ],
             }
         }, err => {
             if (err) {

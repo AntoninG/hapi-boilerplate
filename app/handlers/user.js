@@ -18,10 +18,10 @@ module.exports.readAll = (request, response) => {
 module.exports.create = (request, response) => {
     let model = new request.server.database.user();
 
-    model.save(request.payload);
+    model.set(request.payload);
 
     model.save().then(saved => {
-        response.boom(200, 'OK');
+        response(null, 'OK');
     }).catch(err => {
         response.boom(500, 'Error on save', _.omit(request.payload, ['password', 'nir']));
     });
