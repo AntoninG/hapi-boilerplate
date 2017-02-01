@@ -33,6 +33,9 @@
     "k7": "^1.5.0",
     "k7-mongoose": "^1.5.0",
     "lodash": "4.17.2",
+    "mailgen": "^2.0.2",
+    "nodemailer": "^2.7.2",
+    "randexp": "^0.4.4",
     "vision": "^4.1.1"
   }
 }

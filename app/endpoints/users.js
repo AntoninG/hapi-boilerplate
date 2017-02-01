@@ -1,8 +1,9 @@
 'use strict';
 
-const handler = require('../handlers/user');
-const schema  = require('../schemas/user');
+const handler = require('../handlers/users');
 const Joi     = require('joi');
+const schemaUser = require('../schemas/users');
+const schemaAuth = require('../schemas/auth');
 
 exports.register = (server, options, next) => {
     server.route([
@@ -41,7 +42,7 @@ exports.register = (server, options, next) => {
                 notes       : 'Creation of user entity',
                 tags        : [ 'api' ],
                 validate    : {
-                    payload : schema
+                    payload : schemaUser
                 },
                 handler     : handler.create
             }
@@ -55,7 +56,7 @@ exports.register = (server, options, next) => {
                 notes       : 'Update a user',
                 tags        : [ 'api' ],
                 validate    : {
-                    payload : schema,
+                    payload : schemaUser,
                     params  : {
                         _id : Joi.number().integer().min(1)
                     }
@@ -93,6 +94,20 @@ exports.register = (server, options, next) => {
                     }
                 },
                 handler     : handler.insertUsers
+            }
+        },
+
+        {
+            method : 'POST',
+            path   : '/authent',
+            config : {
+                description : 'Authenticate a user',
+                notes       : 'Authentication a user on login/password couple',
+                tags        : [ 'api' ],
+                validate    : {
+                    payload : schemaAuth
+                },
+                handler     : handler.authent
             }
         }
     ]);

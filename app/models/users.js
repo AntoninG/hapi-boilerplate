@@ -7,21 +7,23 @@ const mongoose       = require('k7-mongoose').mongoose();
 module.exports = jsonToMongoose({
     mongoose    : mongoose,
     collection  : 'user',
-    schema      : require('../schemas/user'),
+    schema      : require('../schemas/users'),
     autoinc     : {
         field       : '_id',
         startAt     : 1,
         incrementBy : 1
     },
     pre         : {
-        save : (doc, next) => {
-            //TODO check on update
-            let hash = encrypt.encodeSha1(doc.password);
+        save    : (doc, next) => {
+            if (doc.isModified('password')) {
+                let hash = encrypt.encodeSha1(doc.password);
 
-            if (hash === false) {
-                return next(new Error('Unable to encode password'));
+                if (hash === false) {
+                    return next(new Error('Unable to encode password'));
+                }
+                doc.password = hash;
             }
-            doc.password = hash;
+
             return next();
         }
     },
