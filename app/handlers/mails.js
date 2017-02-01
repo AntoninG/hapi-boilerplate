@@ -64,15 +64,15 @@ module.exports.sendUpdate = (mailConfig, user, callback) => {
     let email = {
         body: {
             name  : user.firstName + ' ' + user.lastName,
-            intro : 'Welcome on API ! We\'re very excited to have you among us.',
-            outro : ['Here is you login : ' + user.login, 'And your password : ' + plainPassword]
+            intro : 'Your credentials just changed.',
+            outro : 'If you didn\'t ask for these changes, please contact our support team.'
         }
     };
 
     return Nodemailer.createTransport(mailConfig.smtpConfig).sendMail({
         from: '"'+mailConfig.name+'" <'+mailConfig.smtpConfig.auth.user+'>',
         to: user.email,
-        subject: 'Hello ✔',
+        subject: 'Credentials changing',
         text: mailGenerator.generatePlaintext(email),
         html: mailGenerator.generate(email)
     }, (error, info) => {
