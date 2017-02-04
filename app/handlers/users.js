@@ -23,6 +23,7 @@ module.exports.readOne = (request, reply) => {
 
         if (user == null) {
             reply.notFound("User not found");
+            return;
         }
 
         reply(null, user.toObject());
@@ -45,6 +46,7 @@ module.exports.readAll = (request, reply) => {
 
         if (users == null || users.length < 1) {
             reply.notFound("Users not found");
+            return;
         }
 
        users = users.map(user => user.toObject());
@@ -64,7 +66,7 @@ module.exports.create = (request, reply) => {
     let plainPassword = user.password;
 
     user.save().then(saved => {
-        mails.sendCreation(request.server.app.envs.mail, saved, plainPassword, (error) => {
+        mails.sendCreation(request.server.app.envs.mail, saved, plainPassword, error => {
             if (error) {
                 reply.badImplementation(error.message, error);
                 return;
@@ -93,6 +95,7 @@ module.exports.update = (request, reply) => {
 
         if (user == null) {
             reply.notFound("User not found");
+            return;
         }
 
         let oldPassword = user.password;
@@ -101,7 +104,7 @@ module.exports.update = (request, reply) => {
         user.save().then(saved => {
 
             if (saved.password !== oldPassword || saved.login !== oldLogin) {
-                mails.sendUpdate(request.server.app.envs.mail, saved, (error) => {
+                mails.sendUpdate(request.server.app.envs.mail, saved, error => {
                     if (error) {
                         reply.badImplementation(error.message, error);
                         return;
@@ -183,6 +186,11 @@ module.exports.authent = (request, reply) => {
             return;
         }
 
+        if (user == null) {
+            reply.notFound("User not found");
+            return;
+        }
+
         let hash = encrypt.encodeSha1(auth.password);
         if (user == null || user.password !== hash) {
             reply({msg : 'KO'});
@@ -191,4 +199,38 @@ module.exports.authent = (request, reply) => {
 
         reply({msg : 'OK'})
     });
+};
+
+module.exports.passwordReset = (request, reply) => {
+    const User = request.server.database.user;
+    let _id    = request.params._id;
+
+    User.findOne({_id: _id}, (err, user) => {
+        if (err) {
+            reply.badImplementation(err.message, err);
+            return;
+        }
+
+        if (user == null) {
+            reply.notFound("User not found");
+            return;
+        }
+
+        let password = Faker.internet.password();
+        while (password == user.password) { password = Faker.internet.password(); }
+        user.password = password;
+
+        user.save().then(saved => {
+            mails.sendResetPassword(request.server.app.envs.mail, user, password, error => {
+                if (error) {
+                    reply.badImplementation(error.message, error);
+                    return;
+                }
+
+                reply(null, 'OK');
+            });
+        }).catch(err => {
+            reply.badImplementation(err.message, err);
+        });
+    })
 };

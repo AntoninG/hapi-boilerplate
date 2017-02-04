@@ -109,6 +109,22 @@ exports.register = (server, options, next) => {
                 },
                 handler     : handler.authent
             }
+        },
+
+        {
+            method : 'GET',
+            path   : '/resetpassword/{_id}',
+            config : {
+                description : 'Reset the password of a user',
+                notes       : 'Reset the password of a user and send him the new one in a mail',
+                tags        : [ 'api' ],
+                validate    : {
+                    params  : {
+                        _id : Joi.number().integer().min(1)
+                    }
+                },
+                handler     : handler.passwordReset
+            }
         }
     ]);
     next();

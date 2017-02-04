@@ -12,14 +12,6 @@ const Mailgen    = require('mailgen');
  * @param callback
  */
 module.exports.sendCreation = (mailConfig, user, plainPassword, callback) => {
-    const mailGenerator = new Mailgen({
-        theme   : 'salted',
-        product : {
-            name: 'API',
-            link: 'http://localhost:8080/documentation'
-        }
-    });
-
     let email = {
         body: {
             name  : user.firstName + ' ' + user.lastName,
@@ -28,22 +20,7 @@ module.exports.sendCreation = (mailConfig, user, plainPassword, callback) => {
         }
     };
 
-    return Nodemailer.createTransport(mailConfig.smtpConfig).sendMail({
-        from: '"'+mailConfig.name+'" <'+mailConfig.smtpConfig.auth.user+'>',
-        to: user.email,
-        subject: 'Hello ✔',
-        text: mailGenerator.generatePlaintext(email),
-        html: mailGenerator.generate(email)
-    }, (error, info) => {
-        if(error){
-            callback(error);
-            return;
-        }
-
-        callback(null);
-    });
-
-
+    return sendMail(mailConfig, user.email, email, callback);
 };
 
 /**
@@ -53,14 +30,6 @@ module.exports.sendCreation = (mailConfig, user, plainPassword, callback) => {
  * @param callback
  */
 module.exports.sendUpdate = (mailConfig, user, callback) => {
-    const mailGenerator = new Mailgen({
-        theme   : 'salted',
-        product : {
-            name: 'API',
-            link: 'http://localhost:8080/documentation'
-        }
-    });
-
     let email = {
         body: {
             name  : user.firstName + ' ' + user.lastName,
@@ -69,9 +38,33 @@ module.exports.sendUpdate = (mailConfig, user, callback) => {
         }
     };
 
-    return Nodemailer.createTransport(mailConfig.smtpConfig).sendMail({
-        from: '"'+mailConfig.name+'" <'+mailConfig.smtpConfig.auth.user+'>',
-        to: user.email,
+    return sendMail(mailConfig, user.email, email, callback);
+};
+
+module.exports.sendResetPassword = (mailConfig, user, plainPassword, callback) => {
+    let email = {
+        body: {
+            name  : user.firstName + ' ' + user.lastName,
+            intro : 'You asked a reset password',
+            outro : 'Here is your new one : ' + plainPassword
+        }
+    };
+
+    return sendMail(mailConfig, user.email, email, callback);
+};
+
+const sendMail = function (config, recipient, email, callback) {
+    const mailGenerator = new Mailgen({
+        theme   : 'salted',
+        product : {
+            name: 'API',
+            link: 'http://localhost:8080/documentation'
+        }
+    });
+
+    return Nodemailer.createTransport(config.smtpConfig).sendMail({
+        from: '"'+config.name+'" <'+config.smtpConfig.auth.user+'>',
+        to: recipient,
         subject: 'Credentials changing',
         text: mailGenerator.generatePlaintext(email),
         html: mailGenerator.generate(email)
