@@ -113,10 +113,10 @@ exports.register = (server, options, next) => {
 
         {
             method : 'GET',
-            path   : '/resetpassword/{_id}',
+            path   : '/users/resetpassword/{_id}',
             config : {
                 description : 'Reset the password of a user',
-                notes       : 'Reset the password of a user and send him the new one in a mail',
+                notes       : 'Reset the password of a user and send him the new one by mail',
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {

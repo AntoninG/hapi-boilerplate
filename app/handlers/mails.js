@@ -45,7 +45,7 @@ module.exports.sendResetPassword = (mailConfig, user, plainPassword, callback) =
     let email = {
         body: {
             name  : user.firstName + ' ' + user.lastName,
-            intro : 'You asked a reset password',
+            intro : 'You asked a password reset',
             outro : 'Here is your new one : ' + plainPassword
         }
     };
