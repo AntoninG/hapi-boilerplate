@@ -8,9 +8,14 @@ const encrypt = require('@antoning/iut-encrypt');
 const MAX_RAND_INSERTED = 100;
 
 /**
+ * Read one user, search base on _id
  *
  * @param request
+ *      params._id
  * @param reply
+ *      500 in case of error
+ *      404 if the user is not found
+ *      200 if OK plus the user
  */
 module.exports.readOne = (request, reply) => {
     const User = request.server.database.user;
@@ -26,37 +31,41 @@ module.exports.readOne = (request, reply) => {
             return;
         }
 
-        reply(null, user.toObject());
+        reply(user.toObject());
     });
 };
 
 /**
+ * Read all users stored
  *
  * @param request
  * @param reply
+ *      500 in case of error
+ *      200 if OK plus an array of users
  */
 module.exports.readAll = (request, reply) => {
     const User = request.server.database.user;
 
     User.find({}, (err, users) => {
-       if (err) {
+        if (err) {
            reply.badImplementation(err.message, err);
            return;
-       }
-
-        if (users == null || users.length < 1) {
-            reply.notFound("Users not found");
-            return;
         }
 
-       users = users.map(user => user.toObject());
-       reply(null, users);
+        if (users == null || users.length < 1) {
+            users = [];
+        } else {
+            users = users.map(user => user.toObject());
+        }
+
+        reply(users);
     });
 };
 
 /**
  *
  * @param request
+ *      payload
  * @param reply
  */
 module.exports.create = (request, reply) => {
@@ -72,7 +81,7 @@ module.exports.create = (request, reply) => {
                 return;
             }
 
-            reply(null, 'OK');
+            reply(saved.toObject()).code(201);
         });
     }).catch(err => {
         reply.badImplementation(err.message, err);
@@ -110,10 +119,10 @@ module.exports.update = (request, reply) => {
                         return;
                     }
 
-                    reply(null, 'OK');
+                    reply(saved.toObject()).code(201);
                 })
             } else {
-                reply(null, 'OK');
+                reply(saved.toObject()).code(201);
             }
 
         }).catch(err => {
@@ -136,7 +145,7 @@ module.exports.delete = (request, reply) => {
             return;
         }
 
-        reply(null, 'OK');
+        reply({}).code(204);
     });
 };
 
@@ -144,15 +153,16 @@ module.exports.delete = (request, reply) => {
  * Insert a {number}
  *
  * @param request
- *      params.number
+ *      params.number: between 1 and 100, if higher than 100, 100 kept
  * @param reply
+ *      500
  */
 module.exports.insertUsers = (request, reply) => {
     let nbUsers = request.params.number;
     nbUsers = Math.min(nbUsers, MAX_RAND_INSERTED);
 
-    let user;
-    let users = [];
+    let user,
+        users = [];
     for (let i = 0 ; i < nbUsers ; i++) {
         user = new request.server.database.user();
         user.set({
@@ -170,12 +180,19 @@ module.exports.insertUsers = (request, reply) => {
     }
 
     Promise.all(users).then(users => {
-        reply(null, 'OK');
+        users = users.map(user => { user.toObject(); });
+        reply(users);
     }).catch(err => {
         reply.badImplementation(err.message, err);
     });
 };
 
+/**
+ *
+ * @param request
+ *      payload : valid user Joi schema
+ * @param reply
+ */
 module.exports.authent = (request, reply) => {
     const User = request.server.database.user;
     let auth   = request.payload;
@@ -186,33 +203,37 @@ module.exports.authent = (request, reply) => {
             return;
         }
 
-        if (user == null) {
-            reply.notFound("User not found");
-            return;
-        }
-
         let hash = encrypt.encodeSha1(auth.password);
         if (user == null || user.password !== hash) {
-            reply({msg : 'KO'});
+            reply({msg : 'KO'}).code(401);
             return;
         }
 
-        reply({msg : 'OK'})
+        reply({msg : 'OK'});
     });
 };
 
+/**
+ *
+ * @param request
+ *      params.email : valid and existing email
+ * @param reply
+ *      500 in case of error
+ *      404 if there is no correspondence with email
+ *      200 if OK
+ */
 module.exports.passwordReset = (request, reply) => {
     const User = request.server.database.user;
-    let _id    = request.params._id;
+    let email  = request.params.email;
 
-    User.findOne({_id: _id}, (err, user) => {
+    User.findOne({email: email}, (err, user) => {
         if (err) {
             reply.badImplementation(err.message, err);
             return;
         }
 
         if (user == null) {
-            reply.notFound("User not found");
+            reply.notFound("No correspondence");
             return;
         }
 
@@ -227,7 +248,7 @@ module.exports.passwordReset = (request, reply) => {
                     return;
                 }
 
-                reply(null, 'OK');
+                reply({});
             });
         }).catch(err => {
             reply.badImplementation(err.message, err);

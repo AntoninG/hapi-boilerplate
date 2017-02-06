@@ -7,6 +7,7 @@ const schemaAuth = require('../schemas/auth');
 
 exports.register = (server, options, next) => {
     server.route([
+        /** Get one specific user by _id */
         {
             method : 'GET',
             path   : '/users/{_id}',
@@ -23,6 +24,7 @@ exports.register = (server, options, next) => {
             }
         },
 
+        /** Get all users */
         {
             method : 'GET',
             path   : '/users',
@@ -34,6 +36,7 @@ exports.register = (server, options, next) => {
             }
         },
 
+        /** Create a new user */
         {
             method : 'POST',
             path   : '/users',
@@ -48,6 +51,7 @@ exports.register = (server, options, next) => {
             }
         },
 
+        /** Update a user on _id */
         {
             method : 'PUT',
             path   : '/users/{_id}',
@@ -65,6 +69,7 @@ exports.register = (server, options, next) => {
             }
         },
 
+        /** Delete a user on _id */
         {
             method : 'DELETE',
             path   : '/users/{_id}',
@@ -81,6 +86,7 @@ exports.register = (server, options, next) => {
             }
         },
 
+        /** Insert a give number of random users */
         {
             method : 'GET',
             path   : '/users/insertRandom/{number}',
@@ -90,13 +96,14 @@ exports.register = (server, options, next) => {
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {
-                        number : Joi.number().integer().min(1)
+                        number : Joi.number().integer().min(1).max(100)
                     }
                 },
                 handler     : handler.insertUsers
             }
         },
 
+        /** Try to authenticate a user */
         {
             method : 'POST',
             path   : '/authent',
@@ -111,16 +118,17 @@ exports.register = (server, options, next) => {
             }
         },
 
+        /** Reset the password of a user, searched on its email */
         {
             method : 'GET',
-            path   : '/users/resetpassword/{_id}',
+            path   : '/users/resetpassword/{email}',
             config : {
                 description : 'Reset the password of a user',
                 notes       : 'Reset the password of a user and send him the new one by mail',
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {
-                        _id : Joi.number().integer().min(1)
+                        email : Joi.string().email()
                     }
                 },
                 handler     : handler.passwordReset

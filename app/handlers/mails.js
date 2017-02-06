@@ -1,5 +1,4 @@
 'use strict';
-//TODO make promises
 
 const Nodemailer = require('nodemailer');
 const Mailgen    = require('mailgen');
