@@ -15,8 +15,8 @@ module.exports = {
             port: 465,
             secure: true,
             auth: {
-                user: 'antonin.guiletdupont@gmail.com',
-                pass: 'manon190295'
+                user: 'antonin.hapilp@gmail.com',
+                pass: 'antoninhapilp'
             }
         },
         name    : 'Antonin GUILET'
