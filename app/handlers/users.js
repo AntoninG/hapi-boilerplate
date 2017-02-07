@@ -13,9 +13,6 @@ const MAX_RAND_INSERTED = 100;
  * @param request
  *      params._id
  * @param reply
- *      500 in case of error
- *      404 if the user is not found
- *      200 if OK plus the user
  */
 module.exports.readOne = (request, reply) => {
     const User = request.server.database.user;
@@ -40,8 +37,6 @@ module.exports.readOne = (request, reply) => {
  *
  * @param request
  * @param reply
- *      500 in case of error
- *      200 if OK plus an array of users
  */
 module.exports.readAll = (request, reply) => {
     const User = request.server.database.user;
@@ -63,9 +58,9 @@ module.exports.readAll = (request, reply) => {
 };
 
 /**
+ * Create a user
  *
  * @param request
- *      payload
  * @param reply
  */
 module.exports.create = (request, reply) => {
@@ -89,6 +84,7 @@ module.exports.create = (request, reply) => {
 };
 
 /**
+ * Update a user
  *
  * @param request
  * @param reply
@@ -132,6 +128,7 @@ module.exports.update = (request, reply) => {
 };
 
 /**
+ * Delete a user
  *
  * @param request
  * @param reply
@@ -155,7 +152,6 @@ module.exports.delete = (request, reply) => {
  * @param request
  *      params.number: between 1 and 100, if higher than 100, 100 kept
  * @param reply
- *      500
  */
 module.exports.insertUsers = (request, reply) => {
     let nbUsers = request.params.number;
@@ -188,9 +184,10 @@ module.exports.insertUsers = (request, reply) => {
 };
 
 /**
+ * Authentication request
  *
  * @param request
- *      payload : valid user Joi schema
+ *      payload : valid auth Joi schema (login + password)
  * @param reply
  */
 module.exports.authent = (request, reply) => {
@@ -214,13 +211,11 @@ module.exports.authent = (request, reply) => {
 };
 
 /**
+ * Request for password reset, send a mail with the new password
  *
  * @param request
  *      params.email : valid and existing email
  * @param reply
- *      500 in case of error
- *      404 if there is no correspondence with email
- *      200 if OK
  */
 module.exports.passwordReset = (request, reply) => {
     const User = request.server.database.user;
@@ -242,7 +237,7 @@ module.exports.passwordReset = (request, reply) => {
         user.password = password;
 
         user.save().then(saved => {
-            mails.sendResetPassword(request.server.app.envs.mail, user, password, error => {
+            mails.sendResetPassword(request.server.app.envs.mail, saved.toObject(), password, error => {
                 if (error) {
                     reply.badImplementation(error.message, error);
                     return;

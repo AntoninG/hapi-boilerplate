@@ -4,6 +4,7 @@ const Nodemailer = require('nodemailer');
 const Mailgen    = require('mailgen');
 
 /**
+ * Send a mail to a user for its creation
  *
  * @param mailConfig
  * @param user
@@ -23,6 +24,7 @@ module.exports.sendCreation = (mailConfig, user, plainPassword, callback) => {
 };
 
 /**
+ * Send a mail to a user to inform him its credentials changed
  *
  * @param mailConfig
  * @param user
@@ -40,6 +42,14 @@ module.exports.sendUpdate = (mailConfig, user, callback) => {
     return sendMail(mailConfig, user.email, email, callback);
 };
 
+/**
+ * Send a mail to a user with to give him his new password (reset request)
+ *
+ * @param mailConfig
+ * @param user
+ * @param plainPassword
+ * @param callback
+ */
 module.exports.sendResetPassword = (mailConfig, user, plainPassword, callback) => {
     let email = {
         body: {

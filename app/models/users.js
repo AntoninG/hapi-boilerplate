@@ -15,6 +15,7 @@ module.exports = jsonToMongoose({
     },
     pre         : {
         save    : (doc, next) => {
+            // Encode password only if it was modified
             if (doc.isModified('password')) {
                 let hash = encrypt.encodeSha1(doc.password);
 
