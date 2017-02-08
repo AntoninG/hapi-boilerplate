@@ -13,7 +13,7 @@ exports.register = (server, options, next) => {
             path   : '/users/{_id}',
             config : {
                 description : 'Get a specific user',
-                notes       : 'Get a specific user',
+                notes       : 'Get a specific user thanks to its _id. This _id must be an integer >= 1.',
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {
@@ -42,7 +42,15 @@ exports.register = (server, options, next) => {
             path   : '/users',
             config : {
                 description : 'Create the user posted',
-                notes       : 'Creation of user entity',
+                notes       : 'Creation of user entity. The json object must respect the following schema : ' +
+                'login, password, email, firstName and lastName required ' +
+                'email must be a valid email. ' +
+                'nir must be a valid nir ' +
+                'firstName and lastName have a length between 2 and 120 ' +
+                'company and function are optional, as nir, and must have a length between 2 and 100 ' +
+                'password has a length between 8 and 60, login has a length between 3 and 30 ' +
+                'These fields accept alphanumerical chars (min and maj) plus : . _ -'
+                ,
                 tags        : [ 'api' ],
                 validate    : {
                     payload : schemaUser
@@ -57,7 +65,14 @@ exports.register = (server, options, next) => {
             path   : '/users/{_id}',
             config : {
                 description : 'Update a user',
-                notes       : 'Update a user',
+                notes       : 'Update a user. The _id parameter mut be a positive integer. The json object must respect the following schema : ' +
+                'login, password, email, firstName and lastName required ' +
+                'email must be a valid email. ' +
+                'nir must be a valid nir ' +
+                'firstName and lastName have a length between 2 and 120 ' +
+                'company and function are optional, as nir, and must have a length between 2 and 100 ' +
+                'password has a length between 8 and 60, login has a length between 3 and 30 ' +
+                'These fields accept alphanumerical chars (min and maj) plus : . _ -',
                 tags        : [ 'api' ],
                 validate    : {
                     payload : schemaUser,
@@ -75,7 +90,7 @@ exports.register = (server, options, next) => {
             path   : '/users/{_id}',
             config : {
                 description : 'Delete a user',
-                notes       : 'Delete a user',
+                notes       : 'Delete a user. The _id parameter mut be a positive integer.',
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {
@@ -92,7 +107,7 @@ exports.register = (server, options, next) => {
             path   : '/users/insertRandom/{number}',
             config : {
                 description : 'Insert a given number of random users',
-                notes       : 'Maximum 100 users inserted',
+                notes       : 'Maximum 100 users inserted. The _id parameter mut be a positive integer.',
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {
@@ -109,7 +124,11 @@ exports.register = (server, options, next) => {
             path   : '/authent',
             config : {
                 description : 'Authenticate a user',
-                notes       : 'Authentication a user on login/password couple',
+                notes       : 'Authentication a user on login/password couple. ' +
+                'The json object must respect the following schema : ' +
+                'login and password required : ' +
+                'password has a length between 8 and 60, login has a length between 3 and 30 ' +
+                'These fields accept alphanumerical chars (min and maj) plus : . _ -',
                 tags        : [ 'api' ],
                 validate    : {
                     payload : schemaAuth
@@ -124,7 +143,8 @@ exports.register = (server, options, next) => {
             path   : '/users/resetpassword/{email}',
             config : {
                 description : 'Reset the password of a user',
-                notes       : 'Reset the password of a user and send him the new one by mail',
+                notes       : 'Reset the password of a user and send him the new one by mail. ' +
+                'The parameter email must be a valid and existing email.',
                 tags        : [ 'api' ],
                 validate    : {
                     params  : {
