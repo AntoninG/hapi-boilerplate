@@ -3,7 +3,6 @@
 const _       = require('lodash');
 const Faker   = require('faker');
 const RandExp = require('randexp');
-const mails   = require('./mails');
 const encrypt = require('@antoning/iut-encrypt');
 const MAX_RAND_INSERTED = 100;
 
@@ -70,7 +69,7 @@ module.exports.create = (request, reply) => {
     let plainPassword = user.password;
 
     user.save().then(saved => {
-        mails.sendCreation(request.server.app.envs.mail, saved, plainPassword, error => {
+       request.server.ioClient.emit('send-creation', 1, error => {
             if (error) {
                 reply.badImplementation(error.message, error);
                 return;

@@ -3,7 +3,7 @@
 const Hapi          = require('hapi');
 const plugins       = require('./manifest/plugins');
 const routes        = require('./manifest/routes');
-const model         = require('./manifest/model.js');
+const model         = require('./manifest/model');
 const serverConfig  = require('./manifest/server');
 
 module.exports.init = () => {

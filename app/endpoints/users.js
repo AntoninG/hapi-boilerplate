@@ -159,5 +159,5 @@ exports.register = (server, options, next) => {
 };
 
 exports.register.attributes = {
-    name : 'user-routes'
+    name : 'users-routes'
 };

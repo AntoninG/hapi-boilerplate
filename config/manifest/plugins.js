@@ -39,6 +39,14 @@ module.exports.init = server => {
                 server.register({
                     register : require('hapi-swagger')
                 }, done);
+            },
+            ioClient(done) {
+                server.register({
+                    register : require('../../app/plugins/ioClient'),
+                    options : {
+                        server : 'http://0.0.0.0:8080'
+                    }
+                }, done);
             }
         }, err => {
             if (err) {
