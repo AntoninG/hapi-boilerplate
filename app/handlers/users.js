@@ -70,16 +70,15 @@ module.exports.create = (request, reply) => {
 
     user.save().then(saved => {
         request.server.ioClient.emit('send-creation', {
-            user : saved,
+            user     : {
+                email     : saved.email,
+                firstName : saved.firstName,
+                lastName  : saved.lastName
+            },
             password : plainPassword
-        }, error => {
-            if (error) {
-                reply.badImplementation(error.message, error);
-                return;
-            }
-
-            reply(saved.toObject()).code(201);
         });
+
+        reply(saved.toObject()).code(201);
     }).catch(err => {
         reply.badImplementation(err.message, err);
     });
@@ -109,20 +108,17 @@ module.exports.update = (request, reply) => {
         let oldLogin    = user.login;
         _.merge(user, request.payload);
         user.save().then(saved => {
-
             if (saved.password !== oldPassword || saved.login !== oldLogin) {
-                mails.sendUpdate(request.server.app.envs.mail, saved, error => {
-                    if (error) {
-                        reply.badImplementation(error.message, error);
-                        return;
+                request.server.ioClient.emit('send-update', {
+                    user : {
+                        email     : saved.email,
+                        firstName : saved.firstName,
+                        lastName  : saved.lastName
                     }
-
-                    reply(saved.toObject()).code(201);
-                })
-            } else {
-                reply(saved.toObject()).code(201);
+                });
             }
 
+            reply(saved.toObject()).code(201);
         }).catch(err => {
             reply.badImplementation(err.message, err);
         });
@@ -179,6 +175,7 @@ module.exports.insertUsers = (request, reply) => {
 
     Promise.all(users).then(users => {
         users = users.map(user => { user.toObject(); });
+
         reply(users);
     }).catch(err => {
         reply.badImplementation(err.message, err);
@@ -239,14 +236,18 @@ module.exports.passwordReset = (request, reply) => {
         user.password = password;
 
         user.save().then(saved => {
-            mails.sendResetPassword(request.server.app.envs.mail, saved.toObject(), password, error => {
-                if (error) {
-                    reply.badImplementation(error.message, error);
-                    return;
-                }
-
-                reply({});
+            request.server.ioClient.emit('reset-password', {
+                user     : {
+                    email     : saved.email,
+                    firstName : saved.firstName,
+                    lastName  : saved.lastName
+                },
+                password : password
+            }, () => {
+                reply(saved.toObject()).code(201);
             });
+
+
         }).catch(err => {
             reply.badImplementation(err.message, err);
         });
