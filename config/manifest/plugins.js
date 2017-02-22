@@ -44,7 +44,7 @@ module.exports.init = server => {
                 server.register({
                     register : require('../../app/plugins/ioClient'),
                     options : {
-                        server : 'http://0.0.0.0:8080'
+                        server : 'http://127.0.0.1:8081'
                     }
                 }, done);
             }

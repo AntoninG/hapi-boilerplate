@@ -69,7 +69,10 @@ module.exports.create = (request, reply) => {
     let plainPassword = user.password;
 
     user.save().then(saved => {
-       request.server.ioClient.emit('send-creation', 1, error => {
+        request.server.ioClient.emit('send-creation', {
+            user : saved,
+            password : plainPassword
+        }, error => {
             if (error) {
                 reply.badImplementation(error.message, error);
                 return;
