@@ -3,7 +3,9 @@ Faites attention avec la génération automatique de user, l'aléatoire n'est pa
 
 Faites attention aussi avec l'envoi des mails, si ça tombe sur une adresse qui existe vraiment :p
 
-Le projet n'est paramétré que pour du local. J'ai créé une adresse gmail exclusivement pour ce cours, n'hésitez pas l'employer si ça vous arrange.
+Le projet n'est paramétré que pour du local, lancez donc avec la variable d'environnement NODE_ENV=local. J'ai créé une adresse gmail exclusivement pour ce cours, n'hésitez pas l'employer si ça vous arrange.
+
+Si MongoDB n'est pas lancé avant, il ne fera pas de reconnexion automatique au démarrage de Mongo.
 
 # hapi-boilerplate
 Boilerplate Hapi utilisé pour les TP Node.JS des Licence pro

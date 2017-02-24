@@ -71,6 +71,7 @@ module.exports.create = (request, reply) => {
     user.save().then(saved => {
         request.server.ioClient.emit('send-creation', {
             user     : {
+                login     : saved.login,
                 email     : saved.email,
                 firstName : saved.firstName,
                 lastName  : saved.lastName
@@ -111,6 +112,7 @@ module.exports.update = (request, reply) => {
             if (saved.password !== oldPassword || saved.login !== oldLogin) {
                 request.server.ioClient.emit('send-update', {
                     user : {
+                        login     : saved.login,
                         email     : saved.email,
                         firstName : saved.firstName,
                         lastName  : saved.lastName
@@ -238,6 +240,7 @@ module.exports.passwordReset = (request, reply) => {
         user.save().then(saved => {
             request.server.ioClient.emit('reset-password', {
                 user     : {
+                    login     : saved.login,
                     email     : saved.email,
                     firstName : saved.firstName,
                     lastName  : saved.lastName
