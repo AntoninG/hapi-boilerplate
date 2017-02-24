@@ -44,7 +44,7 @@ module.exports.init = server => {
                 server.register({
                     register : require('../../app/plugins/ioClient'),
                     options : {
-                        server : 'http://127.0.0.1:8081'
+                        server : envConfig.mail.service.url
                     }
                 }, done);
             }
