@@ -174,9 +174,9 @@ module.exports.insertUsers = (request, reply) => {
     }
 
     Promise.all(users).then(users => {
-        users = users.map(user => { user.toObject(); });
+        users = users.map(user => user.toObject() );
 
-        reply(users);
+        reply(users).code(201);
     }).catch(err => {
         reply.badImplementation(err.message, err);
     });
